@@ -37,51 +37,23 @@ if "retrieval_chain" not in st.session_state:
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# st.sidebar.header("API Configuration")
-
-# #API Key inputs
-# pinecone_api_key = st.sidebar.text_input(
-#     "Pinecone API Key",
-    
-#     type="password",
-#     help="Your Pinecone API key"
-# )
-
-# huggingface_token = st.sidebar.text_input(
-#     "HuggingFace API Token",
-    
-#     type="password",
-#     help="Your HuggingFace API token"
-# )
-
-# groq_api_key = st.sidebar.text_input(
-#     "Groq API Key",
-    
-#     type="password",
-#     help="Your Groq API key"
-# )
-
-# cohere_api_key = st.sidebar.text_input(
-#     "Cohere API Key",
-    
-#     type="password",
-#     help="Your Cohere API key"
-# )
-
+# Get API keys
 try:
     pinecone_api_key = st.secrets["PINECONE_API_KEY"]
     huggingface_token = st.secrets["HUGGINGFACE_API_TOKEN"]
     groq_api_key = st.secrets["GROQ_API_KEY"]
     cohere_api_key = st.secrets["COHERE_API_KEY"]
     
-    st.sidebar.success("API keys loaded from secrets!", icon="✅")
+    st.sidebar.success("API keys loaded from secrets!")
     
+# If secrets aren't found, show sidebar inputs (for local development/evaluation)
 except:
     st.sidebar.header("API Configuration")
     pinecone_api_key = st.sidebar.text_input("Pinecone API Key", type="password")
     huggingface_token = st.sidebar.text_input("HuggingFace API Token", type="password")
     groq_api_key = st.sidebar.text_input("Groq API Key", type="password")
     cohere_api_key = st.sidebar.text_input("Cohere API Key", type="password")
+
 api_keys_valid = all([pinecone_api_key, huggingface_token, groq_api_key, cohere_api_key])
 
 if not api_keys_valid:
@@ -90,22 +62,24 @@ if not api_keys_valid:
 
 os.environ["HUGGINGFACEHUB_API_TOKEN"] = huggingface_token
 
-#Initialize clients
+#Initialize clients - Pass API keys as parameters
 @st.cache_resource
-def initialize_clients(pinecone_api_key, huggingface_token, groq_api_key, cohere_api_key):
+def initialize_clients(_pinecone_key, _huggingface_token, _groq_key, _cohere_key):
     """Initialize all API clients"""
     try:
-        llm = ChatGroq(api_key=groq_api_key, model="llama-3.1-8b-instant")
+        llm = ChatGroq(api_key=_groq_key, model="llama-3.1-8b-instant")
         embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-        cohere_client = cohere.Client(api_key=cohere_api_key)
-        pinecone_client = Pinecone(api_key=pinecone_api_key)
+        cohere_client = cohere.Client(api_key=_cohere_key)
+        pinecone_client = Pinecone(api_key=_pinecone_key)
         return llm, embeddings, cohere_client, pinecone_client
     except Exception as e:
         st.error(f"Failed to initialize clients: {str(e)}")
         return None, None, None, None
 
-#Initialize clients
-llm, embeddings, cohere_client, pinecone_client = initialize_clients()
+#Initialize clients with API keys
+llm, embeddings, cohere_client, pinecone_client = initialize_clients(
+    pinecone_api_key, huggingface_token, groq_api_key, cohere_api_key
+)
 
 if None in [llm, embeddings, cohere_client, pinecone_client]:
     st.error("Failed to initialize API clients. Please check your API keys.")
@@ -252,6 +226,4 @@ with st.expander("How to use this app"):
     3. **Create Embeddings**: Click the button to process your document
     4. **Ask Questions**: Type questions about your document
     5. **View Results**: See answers with source citations
-
     """)
-
