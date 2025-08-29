@@ -60,26 +60,24 @@ if not api_keys_valid:
     st.warning("Please enter all API keys in the sidebar to continue.")
     st.stop()
 
+# Debug: Show which keys are loaded (without showing the actual keys)
+st.sidebar.markdown("### API Keys Status")
+st.sidebar.write(f"Pinecone: {'✓' if pinecone_api_key else '✗'}")
+st.sidebar.write(f"HuggingFace: {'✓' if huggingface_token else '✗'}")
+st.sidebar.write(f"Groq: {'✓' if groq_api_key else '✗'}")
+st.sidebar.write(f"Cohere: {'✓' if cohere_api_key else '✗'}")
+
 os.environ["HUGGINGFACEHUB_API_TOKEN"] = huggingface_token
 
-#Initialize clients - Pass API keys as parameters
-@st.cache_resource
-def initialize_clients(_pinecone_key, _huggingface_token, _groq_key, _cohere_key):
-    """Initialize all API clients"""
-    try:
-        llm = ChatGroq(api_key=_groq_key, model="llama-3.1-8b-instant")
-        embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-        cohere_client = cohere.Client(api_key=_cohere_key)
-        pinecone_client = Pinecone(api_key=_pinecone_key)
-        return llm, embeddings, cohere_client, pinecone_client
-    except Exception as e:
-        st.error(f"Failed to initialize clients: {str(e)}")
-        return None, None, None, None
-
-#Initialize clients with API keys
-llm, embeddings, cohere_client, pinecone_client = initialize_clients(
-    pinecone_api_key, huggingface_token, groq_api_key, cohere_api_key
-)
+#Initialize clients directly without caching
+try:
+    llm = ChatGroq(api_key=groq_api_key, model="llama-3.1-8b-instant")
+    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+    cohere_client = cohere.Client(api_key=cohere_api_key)
+    pinecone_client = Pinecone(api_key=pinecone_api_key)
+except Exception as e:
+    st.error(f"Failed to initialize clients: {str(e)}")
+    llm, embeddings, cohere_client, pinecone_client = None, None, None, None
 
 if None in [llm, embeddings, cohere_client, pinecone_client]:
     st.error("Failed to initialize API clients. Please check your API keys.")
