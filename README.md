@@ -50,8 +50,8 @@ Follow these steps to run the project locally.
 
 **1. Clone the Repository:**
 ```bash
-git clone <your-repo-url>
-cd <your-repo-name>
+git clone https://github.com/Kush-fanta/RAG-with-Cohere-Reranker
+cd RAG-with-Cohere-Reranker
 ```
 **2. Create a Virtual Environment:**
 ```bash
