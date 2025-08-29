@@ -92,7 +92,7 @@ os.environ["HUGGINGFACEHUB_API_TOKEN"] = huggingface_token
 
 #Initialize clients
 @st.cache_resource
-def initialize_clients():
+def initialize_clients(pinecone_api_key, huggingface_token, groq_api_key, cohere_api_key):
     """Initialize all API clients"""
     try:
         llm = ChatGroq(api_key=groq_api_key, model="llama-3.1-8b-instant")
@@ -254,3 +254,4 @@ with st.expander("How to use this app"):
     5. **View Results**: See answers with source citations
 
     """)
+
