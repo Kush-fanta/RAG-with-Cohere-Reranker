@@ -96,10 +96,11 @@ The vector database for this project is hosted on Pinecone. The index is configu
 
 -----
 
-## Minimal Evaluation
 
 A minimal evaluation was performed using a 5-page sample annual report for the fictional company "InnovateSphere Dynamics."
 
   - **Success Rate:** The system achieved a **Success Rate of 100%**, correctly answering all 5 out of 5 questions.
   - **Precision and Recall:** The system's **precision was flawless**, with all information being factually correct and directly from the source text. The system also showed perfect **recall**, successfully retrieving all parts of multi-part questions and providing comprehensive summaries.
   - **Conclusion:** The application is highly effective for a range of tasks, including fact retrieval, summarization, and handling negative cases where information is not present in the document.
+
+You can check this out on - https://rag-with-cohere-reranker.streamlit.app/
