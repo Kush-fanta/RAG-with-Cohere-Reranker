@@ -117,6 +117,10 @@ if uploaded_file is not None:
     if st.button("Create Vector Embeddings", type="primary"):
         with st.spinner("Creating vector embeddings... This may take a few minutes."):
             try:
+                # Debug: Check if we have the API key
+                st.write(f"DEBUG: Pinecone API Key exists: {bool(pinecone_api_key)}")
+                st.write(f"DEBUG: Pinecone API Key length: {len(pinecone_api_key) if pinecone_api_key else 0}")
+                
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
                     tmp_file.write(uploaded_file.getvalue())
                     tmp_file_path = tmp_file.name
@@ -130,10 +134,14 @@ if uploaded_file is not None:
                 )
                 docs = text_splitter.split_documents(documents)
 
+                # Get the Pinecone index explicitly
+                index = pinecone_client.Index(PINECONE_INDEX_NAME)
+                
                 vector_store = PineconeVectorStore.from_documents(
                     documents=docs,
                     embedding=embeddings,
-                    index_name=PINECONE_INDEX_NAME
+                    index_name=PINECONE_INDEX_NAME,
+                    pinecone_api_key=pinecone_api_key
                 )
 
                 base_retriever = vector_store.as_retriever(search_kwargs={"k": 10})
