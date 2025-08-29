@@ -38,21 +38,12 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 
 # Get API keys
-try:
-    pinecone_api_key = st.secrets["PINECONE_API_KEY"]
-    huggingface_token = st.secrets["HUGGINGFACE_API_TOKEN"]
-    groq_api_key = st.secrets["GROQ_API_KEY"]
-    cohere_api_key = st.secrets["COHERE_API_KEY"]
-    
-    st.sidebar.success("API keys loaded from secrets!")
-    
-# If secrets aren't found, show sidebar inputs (for local development/evaluation)
-except:
-    st.sidebar.header("API Configuration")
-    pinecone_api_key = st.sidebar.text_input("Pinecone API Key", type="password")
-    huggingface_token = st.sidebar.text_input("HuggingFace API Token", type="password")
-    groq_api_key = st.sidebar.text_input("Groq API Key", type="password")
-    cohere_api_key = st.sidebar.text_input("Cohere API Key", type="password")
+
+st.sidebar.header("API Configuration")
+pinecone_api_key = st.sidebar.text_input("Pinecone API Key", type="password")
+huggingface_token = st.sidebar.text_input("HuggingFace API Token", type="password")
+groq_api_key = st.sidebar.text_input("Groq API Key", type="password")
+cohere_api_key = st.sidebar.text_input("Cohere API Key", type="password")
 
 api_keys_valid = all([pinecone_api_key, huggingface_token, groq_api_key, cohere_api_key])
 
@@ -68,6 +59,7 @@ st.sidebar.write(f"Groq: {'✓' if groq_api_key else '✗'}")
 st.sidebar.write(f"Cohere: {'✓' if cohere_api_key else '✗'}")
 
 os.environ["HUGGINGFACEHUB_API_TOKEN"] = huggingface_token
+os.environ["PINECONE_API_KEY"] = pinecone_api_key  # Add this line
 
 #Initialize clients directly without caching
 try:
@@ -134,14 +126,11 @@ if uploaded_file is not None:
                 )
                 docs = text_splitter.split_documents(documents)
 
-                # Get the Pinecone index explicitly
-                index = pinecone_client.Index(PINECONE_INDEX_NAME)
-                
+                # Create vector store with explicit index reference
                 vector_store = PineconeVectorStore.from_documents(
                     documents=docs,
                     embedding=embeddings,
-                    index_name=PINECONE_INDEX_NAME,
-                    pinecone_api_key=pinecone_api_key
+                    index_name=PINECONE_INDEX_NAME
                 )
 
                 base_retriever = vector_store.as_retriever(search_kwargs={"k": 10})
