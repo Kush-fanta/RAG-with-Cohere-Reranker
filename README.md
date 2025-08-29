@@ -68,7 +68,7 @@ pip install -r requirements.txt
 1.  **Launch the App:**
 
     ```bash
-    streamlit run app.py
+    streamlit run main.py
     ```
 
 2.  **Enter API Keys:** In the sidebar, enter your API keys for Pinecone, Hugging Face, Groq, and Cohere.
