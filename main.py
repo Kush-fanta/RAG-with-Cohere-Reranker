@@ -64,7 +64,10 @@ os.environ["PINECONE_API_KEY"] = pinecone_api_key  # Add this line
 #Initialize clients directly without caching
 try:
     llm = ChatGroq(api_key=groq_api_key, model="llama-3.1-8b-instant")
-    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+    embeddings = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/all-MiniLM-L6-v2",
+    model_kwargs = {'device': 'cpu'}
+    )
     cohere_client = cohere.Client(api_key=cohere_api_key)
     pinecone_client = Pinecone(api_key=pinecone_api_key)
 except Exception as e:
@@ -222,3 +225,4 @@ with st.expander("How to use this app"):
     4. **Ask Questions**: Type questions about your document
     5. **View Results**: See answers with source citations
     """)
+
