@@ -37,38 +37,51 @@ if "retrieval_chain" not in st.session_state:
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-st.sidebar.header("API Configuration")
+# st.sidebar.header("API Configuration")
 
-#API Key inputs
-pinecone_api_key = st.sidebar.text_input(
-    "Pinecone API Key",
+# #API Key inputs
+# pinecone_api_key = st.sidebar.text_input(
+#     "Pinecone API Key",
     
-    type="password",
-    help="Your Pinecone API key"
-)
+#     type="password",
+#     help="Your Pinecone API key"
+# )
 
-huggingface_token = st.sidebar.text_input(
-    "HuggingFace API Token",
+# huggingface_token = st.sidebar.text_input(
+#     "HuggingFace API Token",
     
-    type="password",
-    help="Your HuggingFace API token"
-)
+#     type="password",
+#     help="Your HuggingFace API token"
+# )
 
-groq_api_key = st.sidebar.text_input(
-    "Groq API Key",
+# groq_api_key = st.sidebar.text_input(
+#     "Groq API Key",
     
-    type="password",
-    help="Your Groq API key"
-)
+#     type="password",
+#     help="Your Groq API key"
+# )
 
-cohere_api_key = st.sidebar.text_input(
-    "Cohere API Key",
+# cohere_api_key = st.sidebar.text_input(
+#     "Cohere API Key",
     
-    type="password",
-    help="Your Cohere API key"
-)
+#     type="password",
+#     help="Your Cohere API key"
+# )
 
-
+try:
+    pinecone_api_key = st.secrets["PINECONE_API_KEY"]
+    huggingface_token = st.secrets["HUGGINGFACE_API_TOKEN"]
+    groq_api_key = st.secrets["GROQ_API_KEY"]
+    cohere_api_key = st.secrets["COHERE_API_KEY"]
+    
+    st.sidebar.success("API keys loaded from secrets!", icon="✅")
+    
+except:
+    st.sidebar.header("API Configuration")
+    pinecone_api_key = st.sidebar.text_input("Pinecone API Key", type="password")
+    huggingface_token = st.sidebar.text_input("HuggingFace API Token", type="password")
+    groq_api_key = st.sidebar.text_input("Groq API Key", type="password")
+    cohere_api_key = st.sidebar.text_input("Cohere API Key", type="password")
 api_keys_valid = all([pinecone_api_key, huggingface_token, groq_api_key, cohere_api_key])
 
 if not api_keys_valid:
@@ -239,4 +252,5 @@ with st.expander("How to use this app"):
     3. **Create Embeddings**: Click the button to process your document
     4. **Ask Questions**: Type questions about your document
     5. **View Results**: See answers with source citations
+
     """)
