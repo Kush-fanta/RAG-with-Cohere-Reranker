@@ -104,3 +104,4 @@ A minimal evaluation was performed using a 5-page sample annual report for the f
   - **Conclusion:** The application is highly effective for a range of tasks, including fact retrieval, summarization, and handling negative cases where information is not present in the document.
 
 You can check this out on - https://rag-with-cohere-reranker.streamlit.app/
+Resume link - https://drive.google.com/file/d/1jdDXUvha1fNrIXhiyzcLxGrvGz63Cogs/view?usp=sharing
