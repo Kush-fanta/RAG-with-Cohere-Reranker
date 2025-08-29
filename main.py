@@ -112,10 +112,6 @@ if uploaded_file is not None:
     if st.button("Create Vector Embeddings", type="primary"):
         with st.spinner("Creating vector embeddings... This may take a few minutes."):
             try:
-                # Debug: Check if we have the API key
-                st.write(f"DEBUG: Pinecone API Key exists: {bool(pinecone_api_key)}")
-                st.write(f"DEBUG: Pinecone API Key length: {len(pinecone_api_key) if pinecone_api_key else 0}")
-                
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
                     tmp_file.write(uploaded_file.getvalue())
                     tmp_file_path = tmp_file.name
@@ -225,4 +221,5 @@ with st.expander("How to use this app"):
     4. **Ask Questions**: Type questions about your document
     5. **View Results**: See answers with source citations
     """)
+
 
